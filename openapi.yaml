@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  title: StoRec API
+  description: Internal API for comunication between client and server
+  version: 0.0.1
+paths:
+  # Handling a set of receipts
+  /receipts:
+    post:
+      summary: Create receipt
+      tags:
+        - Receipts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceiptRequest"
+      responses:
+        201:
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotoResponse"
+    get:
+      summary: Get all receipts, which match defined filters and fulltext search
+      tags:
+        - Receipts
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReceiptResponse"
+
+  /receipts/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Receipt application ID
+    get:
+      summary: Get exactly one receipt
+      tags:
+        - Receipts
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+    put:
+      summary: Update receipt information
+      tags:
+        - Receipts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/ReceiptRequest"
+                - type: object
+                  properties:
+                    photos:
+                      type: array
+                      items:
+                        $ref: "#/components/schemas/Id"
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+    delete:
+      summary: Delete receipt
+      tags:
+        - Receipts
+      responses:
+        204:
+          description: ok, no content
+
+  /photos:
+    post:
+      summary: Upload receipt photo
+      tags:
+        - Photos
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/PhotoRequest"
+                - type: object
+                  properties:
+                    file:
+                      type: string
+                      format: binary
+      responses:
+        201:
+          description: uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotoResponse"
+
+  /photos/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: Photo application ID
+    get:
+      summary: Retrieve photo information
+      tags:
+        - Photos
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotoResponse"
+    put:
+      summary: Update photo caption and receiptId
+      tags:
+        - Photos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhotoRequest"
+      responses:
+        200:
+          description: updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotoResponse"
+    delete:
+      summary: Delete photo
+      tags:
+        - Photos
+      responses:
+        204:
+          description: ok, no content
+
+components:
+  schemas:
+    Id:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+    ReceiptRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: MacBook Pro 2021
+        text:
+          type: string
+    ReceiptResponse:
+      allOf:
+        - $ref: "#/components/schemas/ReceiptRequest"
+        - $ref: "#/components/schemas/Id"
+        - type: object
+          properties:
+            photos:
+              type: array
+              items:
+                $ref: "#/components/schemas/PhotoResponse"
+    PhotoRequest:
+      type: object
+      properties:
+        caption:
+          type: string
+        receiptId:
+          type: number
+          example: 24
+    PhotoResponse:
+      allOf:
+        - $ref: "#/components/schemas/PhotoRequest"
+        - $ref: "#/components/schemas/Id"
+        - type: object
+          properties:
+            cloudinaryId:
+              type: string
+            url:
+              type: string
+
