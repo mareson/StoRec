@@ -4,7 +4,6 @@ info:
   description: Internal API for comunication between client and server
   version: 0.0.1
 paths:
-  # Handling a set of receipts
   /receipts:
     post:
       summary: Create receipt
