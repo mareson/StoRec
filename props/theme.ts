@@ -1,6 +1,8 @@
 import {createTheme} from "@mui/material";
 import {blue, grey} from "@mui/material/colors";
 
+export const FORM_SPACING = 2; // multiplication ratio
+
 const theme = createTheme({
     components: {
         MuiCssBaseline: {

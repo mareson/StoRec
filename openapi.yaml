@@ -166,15 +166,18 @@ components:
         title:
           type: string
           example: MacBook Pro 2021
-        text:
+        note:
           type: string
+        endOfWarranty:
+          type: string
+          example: 2021-11-17T12:59:03.525Z
     ReceiptResponse:
       allOf:
         - $ref: "#/components/schemas/ReceiptRequest"
         - $ref: "#/components/schemas/Id"
         - type: object
           properties:
-            photos:
+            photo:
               type: array
               items:
                 $ref: "#/components/schemas/PhotoResponse"
@@ -186,6 +189,8 @@ components:
         receiptId:
           type: number
           example: 24
+        text:
+          type: string
     PhotoResponse:
       allOf:
         - $ref: "#/components/schemas/PhotoRequest"
