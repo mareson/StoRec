@@ -1,5 +1,11 @@
 
 
+export enum BasicMessages {
+    SOMETHING_WENT_WRONG = "Něco se nepovedlo",
+    SAVED = "Uloženo"
+}
+
+
 export const yupLocalization = {
     mixed: {
         defined: 'Položka je povinná',

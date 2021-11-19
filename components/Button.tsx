@@ -2,10 +2,7 @@ import {FC} from "react";
 
 import MuiButton, {ButtonProps} from '@mui/material/Button';
 
-type Props = {
-    props?: ButtonProps;
-};
-const Button: FC<Props> = ({children, props}) => {
+const Button: FC<ButtonProps> = (props) => {
 
     return (
         <MuiButton
@@ -13,7 +10,7 @@ const Button: FC<Props> = ({children, props}) => {
 
             {...props}
         >
-            {children}
+            {props.children}
         </MuiButton>
     );
 };

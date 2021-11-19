@@ -25,11 +25,11 @@ const SearchForm: FC<Props> = () => {
                             name="fulltext"
                         />
                     </Grid>
-                    <Grid item xs={1}>
-                        <IconButton props={{type: "submit"}}>
+                    <ButtonWrapper item xs={1}>
+                        <IconButton type="submit">
                             <Search />
                         </IconButton>
-                    </Grid>
+                    </ButtonWrapper>
                 </Wrapper>
             </Form>
         </Formik>
@@ -39,4 +39,9 @@ export default SearchForm;
 
 const Wrapper = styled(Grid)(({theme}) => ({
     marginTop: theme.spacing(1)
+}));
+
+const ButtonWrapper = styled(Grid)(({theme}) => ({
+    display: "flex",
+    justifyContent: "center"
 }));

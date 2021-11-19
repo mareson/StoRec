@@ -21,7 +21,8 @@ model photo {
 model receipt {
   id            Int       @id @default(autoincrement())
   createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  endOfWarranty DateTime? @db.Timestamp(6)
+  purchaseDate DateTime @default(now()) @db.Timestamp(6)
+  endOfWarranty DateTime @default(now()) @db.Timestamp(6)
   title         String    @db.VarChar(255)
   note          String?
   photo         photo[]

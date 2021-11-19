@@ -7,7 +7,10 @@ export type Receipt = (PrismaReceipt & {photo: PrismaPhoto[]});
 
 
 export async function getAllReceipts(): Promise<Receipt[]> {
-    return await prisma.receipt.findMany({include: {photo: true}});
+    return await prisma.receipt.findMany({
+        include: {photo: true},
+        orderBy: [{createdAt: "desc"}]
+    });
 }
 
 export async function createReceipt(receiptRequest: ReceiptRequest): Promise<Receipt> {
@@ -15,7 +18,8 @@ export async function createReceipt(receiptRequest: ReceiptRequest): Promise<Rec
         data: {
             title: receiptRequest.title,
             note: receiptRequest.note,
-            endOfWarranty: receiptRequest.endOfWarranty
+            endOfWarranty: receiptRequest.endOfWarranty ?? undefined,
+            purchaseDate: receiptRequest.purchaseDate ?? undefined
         },
         include: {photo: true}
     });
@@ -40,7 +44,8 @@ export async function updateReceipt(id: number, receiptRequest: ReceiptRequest):
         data: {
             title: receiptRequest.title,
             note: receiptRequest.note,
-            endOfWarranty: receiptRequest.endOfWarranty
+            endOfWarranty: receiptRequest.endOfWarranty ?? undefined,
+            purchaseDate: receiptRequest.purchaseDate ?? undefined
         },
         include: {photo: true}
     })

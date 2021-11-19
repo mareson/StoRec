@@ -1,37 +1,53 @@
 import type { NextPage } from 'next';
-import React from "react";
+import React, {useState} from "react";
 import Head from 'next/head';
 import Layout from "../components/Layout";
 import Header from "../components/Header";
-import {Fab, SpeedDial, SpeedDialAction, SpeedDialIcon, styled} from "@mui/material";
-import {Photo, PhotoCamera, Add} from "@mui/icons-material";
+import {Fab, styled} from "@mui/material";
+import {Add} from "@mui/icons-material";
 import ReceiptDialog from "../components/ReceiptDialog";
-import {Dialog, useDialog} from "../components/Dialog";
+import {useDialog} from "../components/Dialog";
 import SearchForm from "../components/forms/SearchForm";
+import ReceiptsList, {useReceiptsList, ReceiptsListContext} from "../components/ReceiptsList";
+import {ReceiptResponse} from "../props/apiResponses";
+import {getReceiptsRequest} from "../services/receiptRequest";
+import {AxiosResponse} from "axios";
 
-const Home: NextPage = () => {
-
+const Home: NextPage<{receipts: ReceiptResponse[]}> = ({receipts}) => {
+    const receiptsList = useReceiptsList(receipts);
     const addDialogProps = useDialog();
 
     return (
-    <Layout>
-        <Head>
-            <title>StoRec – účtenky jsou moje starost</title>
-        </Head>
-        <Header />
-        <SearchForm />
-        <ReceiptDialog dialogBasicProps={addDialogProps} />
-        <StyledFab color="primary" onClick={addDialogProps.handleOpen}>
-            <Add />
-        </StyledFab>
-    </Layout>
+        <ReceiptsListContext.Provider value={receiptsList}>
+            <Layout>
+                <Head>
+                    <title>StoRec – účtenky jsou moje starost</title>
+                </Head>
+                <Header />
+                <SearchForm />
+                <ReceiptsList />
+                <ReceiptDialog dialogBasicProps={addDialogProps} />
+                <StyledFab color="primary" onClick={addDialogProps.handleOpen}>
+                    <Add />
+                </StyledFab>
+            </Layout>
+        </ReceiptsListContext.Provider>
 );
 }
-
-export default Home;
 
 const StyledFab = styled(Fab)(({theme}) => ({
     position: "fixed",
     bottom: theme.spacing(2),
     right: theme.spacing(2)
 }));
+
+export async function getServerSideProps() {
+    const receipts: AxiosResponse<ReceiptResponse[]> = await getReceiptsRequest();
+    return {
+        props: {
+            receipts: receipts.data
+        }
+    }
+}
+
+export default Home;

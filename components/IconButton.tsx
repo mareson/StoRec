@@ -1,17 +1,14 @@
 import {FC} from "react";
 import MuiIconButton, {IconButtonProps} from '@mui/material/IconButton';
 
-type Props = {
-    props?: IconButtonProps;
-};
-const IconButton: FC<Props> = ({props, children}) => {
+const IconButton: FC<IconButtonProps> = (props) => {
     return (
         <MuiIconButton
             color="primary"
 
             {...props}
         >
-            {children}
+            {props.children}
         </MuiIconButton>
     );
 };
