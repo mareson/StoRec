@@ -19,6 +19,7 @@ export default ImagePreview;
 const Wrapper = styled(Grid)(({theme})=>({
     position: "relative",
     height: 200,
+    overflow: "hidden",
     display: "flex",
 }));
 
@@ -31,5 +32,6 @@ const InnerWrapper = styled("div")(({theme}) => ({
 }));
 
 const Image = styled("img")(({theme}) => ({
-    maxWidth: "100%"
+    maxWidth: "100%",
+    maxHeight: "100%"
 }));

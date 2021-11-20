@@ -1,6 +1,8 @@
 import { Prisma, receipt as PrismaReceipt, photo as PrismaPhoto } from "@prisma/client";
 import prisma from "./prisma";
 import {ReceiptRequest} from "../props/apiRequests";
+import {Errors} from "../props/errors";
+import {removePhotoByObject} from "./photos";
 
 
 export type Receipt = (PrismaReceipt & {photo: PrismaPhoto[]});
@@ -31,6 +33,13 @@ export async function getReceiptById(id: number): Promise<Receipt | null> {
 
 export async function removeReceiptById(id: number): Promise<Receipt | null> {
     try {
+        const receipt: Receipt | null = await getReceiptById(id);
+        if (!receipt) throw Errors.NOT_EXISTS_ITEM;
+
+        for (let photo of receipt.photo) {
+            await removePhotoByObject(photo);
+        }
+
         return await prisma.receipt.delete({where: {id}, include: {photo: true}});
     } catch (e) {
         console.error(e);

@@ -15,3 +15,14 @@ export type ReceiptResponse = {
     createdAt: Date;
     photo: any[];
 }
+
+export type PhotoResponse = {
+    id: number;
+    caption: string | null;
+    receiptId: number;
+    text: string;
+    cloudinaryId: string;
+    url: string;
+    width: number;
+    height: number;
+};

@@ -5,12 +5,16 @@ type ErrorType = ErrorResponse & {status: number};
 
 enum ErrorName {
     ValidationError = "ValidationError",
-    NotFoundError = "NotFoundError"
+    NotFoundError = "NotFoundError",
+    CloudinaryError = "CloudinaryError"
 }
 
 enum ErrorsEnum {
     NOT_EXISTS_ITEM="NOT_EXISTS_ITEM",
-    UNSUPPORTED_METHOD="UNSUPPORTED_METHOD"
+    UNSUPPORTED_METHOD="UNSUPPORTED_METHOD",
+    FILE_HAS_NOT_BEEN_SENT="FILE_HAS_NOT_BEEN_SENT",
+    FILE_IS_TOO_LARGE="FILE_IS_TOO_LARGE",
+    SOMETHING_WRONG_CLOUDINARY="SOMETHING_WRONG_CLOUDINARY"
 }
 
 export const Errors: {
@@ -25,6 +29,21 @@ export const Errors: {
         name: ErrorName.NotFoundError,
         message: "Unsupported method",
         status: 405
+    },
+    [ErrorsEnum.FILE_HAS_NOT_BEEN_SENT]: {
+        name: ErrorName.ValidationError,
+        message: "The required file has not been sent",
+        status: 400
+    },
+    [ErrorsEnum.FILE_IS_TOO_LARGE]: {
+        name: ErrorName.ValidationError,
+        message: "The attached file is too large",
+        status: 400
+    },
+    [ErrorsEnum.SOMETHING_WRONG_CLOUDINARY]: {
+        name: ErrorName.CloudinaryError,
+        message: "Something is wrong with cloudinary",
+        status: 500
     }
 }
 

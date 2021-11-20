@@ -3,7 +3,6 @@ import Button from "../../Button";
 import {styled} from "@mui/material";
 import {Photo} from "@mui/icons-material";
 import {useField} from "formik";
-import ImagePreview from "../ImagePreview";
 import ImagesPreview from "../ImagesPreview";
 
 type Props = {
@@ -22,8 +21,9 @@ const ImageUpload: FC<Props> = ({name, change}) => {
                     name={name}
                     multiple
                     onChange={(event)=>{
-                        const files: File[] = Array.from(event.currentTarget.files);
-                        change(name, [...field.value, ...files]);
+                        const files: File[] = Array.from(event.currentTarget.files ?? []);
+                        if (change && name)
+                            change(name, [...field.value, ...files]);
                     }}
                 />
                 <Wrapper>

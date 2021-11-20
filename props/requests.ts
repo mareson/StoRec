@@ -12,7 +12,8 @@ export default function useRequest<T, P>(
         [code: string]: {
             [code: string]: BasicMessages
         }
-    }
+    },
+    disableAutoLoading?: boolean
 ): {
     run: (params: P)=>Promise<null | T>;
     loading: boolean;
@@ -27,7 +28,8 @@ export default function useRequest<T, P>(
     const stopLoading = () => setLoading(false);
 
     const run = (params: P): Promise<null | T> => {
-        startLoading();
+        if (!disableAutoLoading)
+            startLoading();
 
         return new Promise<null | T>((resolve, reject)=>{
             process(params)
@@ -46,7 +48,10 @@ export default function useRequest<T, P>(
 
                     enqueueSnackbar(message, {variant: "error"});
                 })
-                .finally(()=>stopLoading())
+                .finally(()=>{
+                    if (!disableAutoLoading)
+                        stopLoading();
+                })
         });
     };
 

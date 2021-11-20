@@ -11,9 +11,11 @@ model photo {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   caption       String?  @db.VarChar(255)
-  cloudinaryId String?  @db.VarChar(255)
-  text          String?
-  url           String?  @db.VarChar(255)
+  cloudinaryId String  @db.VarChar(255)
+  text          String
+  url           String  @db.VarChar(255)
+  width Int
+  height Int
   receiptId     Int
   receipt       receipt  @relation(fields: [receiptId], references: [id], onDelete: Cascade, map: "receipt")
 }

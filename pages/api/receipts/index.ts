@@ -10,7 +10,7 @@ async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    switch (req.method) {
+    switch (req.method?.toUpperCase()) {
         case "GET": await handleGET(req, res); return;
         case "POST": await handlePOST(req, res); return;
     }

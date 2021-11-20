@@ -2,7 +2,9 @@
 
 export enum BasicMessages {
     SOMETHING_WENT_WRONG = "Něco se nepovedlo",
-    SAVED = "Uloženo"
+    SAVED = "Uloženo",
+    PHOTO_FAILED_TO_SAVE = "Fotku :name se nepodařilo uložit",
+    PHOTO_INFO_FAILED_TO_SAVE = "Informace u fotky :caption se nepodařilo uložit"
 }
 
 

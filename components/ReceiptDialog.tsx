@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Dialog, DialogBasicProps, useDialog} from "./Dialog";
 import {AddCircle, Edit} from "@mui/icons-material";
 import {Icon, styled, SvgIcon, SvgIconProps} from "@mui/material";
@@ -16,6 +16,12 @@ const ReceiptDialog: FC<Props> = (
         receipt
     }
 ) => {
+    const [currReceipt, setCurrReceipt] = useState<ReceiptResponse | undefined>(receipt);
+    useEffect(()=>{
+        if (!dialogBasicProps.open && !receipt) {
+            setCurrReceipt(undefined);
+        }
+    }, [dialogBasicProps.open]);
 
     return (
         <Dialog
@@ -24,7 +30,7 @@ const ReceiptDialog: FC<Props> = (
             title={
                 <StyledTitle>
                     {
-                        !!receipt
+                        !!currReceipt
                             ? <><SvgIcon component={Edit} /> Upravení účtenky</>
                             : <><SvgIcon component={AddCircle} /> Přidání účtenky</>
                     }
@@ -32,8 +38,8 @@ const ReceiptDialog: FC<Props> = (
             }
         >
             <ReceiptForm
-                afterSave={!receipt ? dialogBasicProps.handleClose : undefined}
-                receipt={receipt}
+                afterSave={setCurrReceipt}
+                receipt={currReceipt}
             />
         </Dialog>
     );

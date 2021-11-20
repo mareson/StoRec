@@ -20,7 +20,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PhotoResponse"
+                $ref: "#/components/schemas/ReceiptResponse"
     get:
       summary: Get all receipts, which match defined filters and fulltext search
       tags:
@@ -64,12 +64,6 @@ paths:
             schema:
               allOf:
                 - $ref: "#/components/schemas/ReceiptRequest"
-                - type: object
-                  properties:
-                    photos:
-                      type: array
-                      items:
-                        $ref: "#/components/schemas/Id"
       responses:
         200:
           description: ok
@@ -94,13 +88,13 @@ paths:
         content:
           multipart/form-data:
             schema:
-              allOf:
-                - $ref: "#/components/schemas/PhotoRequest"
-                - type: object
-                  properties:
-                    file:
-                      type: string
-                      format: binary
+              type: object
+              properties:
+                  file:
+                    type: string
+                    format: binary
+                  receiptId:
+                    type: number
       responses:
         201:
           description: uploaded
@@ -129,7 +123,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/PhotoResponse"
     put:
-      summary: Update photo caption and receiptId
+      summary: Update photo caption, text and receiptId
       tags:
         - Photos
       requestBody:

@@ -4,24 +4,7 @@ import {getReceiptById, Receipt, removeReceiptById, updateReceipt} from "../../.
 import {validate} from "../../../props/validate";
 import {receiptRequestSchema} from "../../../props/apiRequests";
 import {Errors, handleError} from "../../../props/errors";
-
-
-async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
-) {
-    let {id} = req.query;
-    const receiptId = Number(id as string);
-    if (isNaN(receiptId)) return handleError(res, Errors.NOT_EXISTS_ITEM);
-
-    switch (req.method) {
-        case "GET": await handleGET(receiptId, req, res); return;
-        case "DELETE": await handleDELETE(receiptId, req, res); return;
-        case "PUT": await handlePUT(receiptId, req, res); return;
-    }
-
-    handleError(res, Errors.UNSUPPORTED_METHOD);
-}
+import {handlerID} from "../../../services/handler";
 
 
 /**
@@ -68,4 +51,8 @@ async function handlePUT(
     res.status(200).send(receipt);
 }
 
-export default validate(receiptRequestSchema, handler);
+export default validate(receiptRequestSchema, (req, res)=>
+    handlerID(req, res, {
+        get: handleGET, put: handlePUT, delete: handleDELETE
+    })
+);

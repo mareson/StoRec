@@ -15,5 +15,5 @@ export async function saveReceiptRequest({receiptRequest, id}: ReceiptRequestPar
 }
 
 export async function getReceiptsRequest(): Promise<AxiosResponse<ReceiptResponse[]>> {
-    return  await axios.get<ReceiptResponse[]>("/receipts");
+    return await axios.get<ReceiptResponse[]>("/receipts");
 }
