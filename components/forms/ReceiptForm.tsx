@@ -1,19 +1,15 @@
-import {FC, useContext} from "react";
+import React, {FC, useContext} from "react";
 import {Formik, Form, FormikProps} from 'formik';
 import {ReceiptRequest, receiptRequestSchema} from "../../props/apiRequests";
 import TextField from "./fields/TextField";
-import Button from "../Button";
 import {Grid} from "@mui/material";
 import {FORM_SPACING} from "../../props/theme";
-import axios from "axios";
-import LoadingButton from "../LoadingButton";
 import {PhotoResponse, ReceiptResponse} from "../../props/apiResponses";
 import useRequest from "../../props/requests";
 import {ReceiptRequestParams, saveReceiptRequest} from "../../services/receiptRequest";
 import {ReceiptsListContext} from "../ReceiptsList";
 import DateField from "./fields/DateField";
 import {BasicMessages} from "../../props/messages";
-import ImageUpload from "./fields/ImageUpload";
 import {
     createPhotoRequest,
     CreatePhotoRequestParams,
@@ -22,8 +18,9 @@ import {
 } from "../../services/photoRequest";
 import {useSnackbar} from "notistack";
 import {passParams} from "../../props/helpers";
-import Image from "next/image";
 import ReceiptFormPhoto from "./ReceiptFormPhoto";
+import ImageUpload from "./fields/ImageUpload";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
     afterSave?: (receipt: ReceiptResponse)=>void;
@@ -177,7 +174,9 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
                             }
                             </Grid>
                             <Grid item xs={12}>
-                                <LoadingButton
+                                <LoadingButton // External file jams typescript validator
+                                    color="primary"
+                                    variant="contained"
                                     type="submit"
                                     loading={saveReceipt.loading}
                                 >

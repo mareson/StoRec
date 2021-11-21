@@ -21,6 +21,8 @@ const ReceiptDialog: FC<Props> = (
         if (!dialogBasicProps.open && !receipt) {
             setCurrReceipt(undefined);
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dialogBasicProps.open]);
 
     return (
