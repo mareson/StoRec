@@ -4,14 +4,16 @@ import ImagePreview from "./ImagePreview";
 
 type Props = {
     files: File[];
+    removeFile: (index: number)=>void;
 };
-const ImagesPreview: FC<Props> = ({files}) => {
+const ImagesPreview: FC<Props> = ({files, removeFile}) => {
     return (
         <Wrapper container spacing={1}>
             {
-                files.map((file, i)=><ImagePreview
+                files.map((file, i: number)=><ImagePreview
                     key={i}
                     image={file}
+                    remove={()=>removeFile(i)}
                 />)
             }
         </Wrapper>

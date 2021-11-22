@@ -1,9 +1,10 @@
 import {FC} from "react";
 import Button from "../../Button";
-import {styled} from "@mui/material";
+import {styled, Typography} from "@mui/material";
 import {Photo} from "@mui/icons-material";
 import {useField} from "formik";
 import ImagesPreview from "../ImagesPreview";
+import { MAX_PHOTO_SIZE } from "../../../props/params";
 
 type Props = {
     name?: string;
@@ -11,6 +12,12 @@ type Props = {
 };
 const ImageUpload: FC<Props> = ({name, change}) => {
     const [field, meta] = useField<File[]>(name ?? "");
+
+    const removeFile = (index: number) => {
+        const files: File[] = field.value;
+        if (change)
+            change(field.name, files.filter((_, i)=>i!==index));
+    };
 
     return (
         <>
@@ -32,7 +39,8 @@ const ImageUpload: FC<Props> = ({name, change}) => {
                     </Button>
                 </Wrapper>
             </label>
-            <ImagesPreview files={field.value} />
+            <Typography fontStyle="italic" color="secondary.dark" textAlign="center">Maximální velikost fotky: {MAX_PHOTO_SIZE/(1024^2)} MB</Typography>
+            <ImagesPreview files={field.value} removeFile={removeFile} />
         </>
     );
 };

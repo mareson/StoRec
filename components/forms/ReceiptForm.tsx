@@ -21,6 +21,7 @@ import {passParams} from "../../props/helpers";
 import ReceiptFormPhoto from "./ReceiptFormPhoto";
 import ImageUpload from "./fields/ImageUpload";
 import { LoadingButton } from "@mui/lab";
+import { MAX_PHOTO_SIZE } from "../../props/params";
 
 type Props = {
     afterSave?: (receipt: ReceiptResponse)=>void;
@@ -65,6 +66,9 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
                 });
                 if (receiptResponse) {
                     for (let file of values.files) {
+                        console.log(file.size);
+                        if (file.size>MAX_PHOTO_SIZE) continue;
+
                         const photoResponse: PhotoResponse | null = await createPhoto.run({
                             photo: file,
                             receiptId: receiptResponse.id
@@ -169,6 +173,7 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
                                         key={photo.id}
                                         photo={photo}
                                         index={i}
+                                        removePhoto={()=>setFieldValue("photo", values.photo.filter(p=>p.id!==photo.id))}
                                     />
                                 )
                             }

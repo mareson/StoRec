@@ -7,6 +7,7 @@ import {getReceiptById, Receipt} from "../../../model/receipts";
 import {createPhoto, Photo} from "../../../model/photos";
 import {PhotoResponse} from "../../../props/apiResponses";
 import vision from "@google-cloud/vision";
+import { MAX_PHOTO_SIZE } from "../../../props/params";
 
 export const config = {
     api: {
@@ -48,7 +49,7 @@ async function handlePOST(
         return;
     }
 
-    if (file.size>10000000) { // due to cloudinary
+    if (file.size>MAX_PHOTO_SIZE) {
         handleError(res, Errors.FILE_IS_TOO_LARGE);
         return;
     }
