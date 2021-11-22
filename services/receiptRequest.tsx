@@ -17,3 +17,10 @@ export async function saveReceiptRequest({receiptRequest, id}: ReceiptRequestPar
 export async function getReceiptsRequest(): Promise<AxiosResponse<ReceiptResponse[]>> {
     return await axios.get<ReceiptResponse[]>("/receipts");
 }
+
+export interface ReceiptRemoveRequestParams {
+    id: number;
+}
+export async function removeReceiptRequest({id}: ReceiptRemoveRequestParams): Promise<AxiosResponse<"">> {
+    return await axios.delete(`/receipts/${id}`);
+}

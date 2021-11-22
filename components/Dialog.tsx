@@ -1,5 +1,5 @@
 import React, {FC, ReactElement, useState} from "react";
-import {Dialog as MuiDialog, DialogActions, DialogContent, DialogContentText, DialogTitle, styled} from "@mui/material";
+import {Color, Dialog as MuiDialog, DialogActions, DialogContent, DialogContentText, DialogTitle, styled} from "@mui/material";
 
 type Props = {
     open: boolean;
@@ -7,6 +7,7 @@ type Props = {
     title?: string | ReactElement;
     contentText?: string | ReactElement;
     actions?: ReactElement;
+    color?: "primary" | "error";
 };
 export const Dialog: FC<Props> = (
     {
@@ -15,9 +16,11 @@ export const Dialog: FC<Props> = (
         title,
         contentText,
         actions,
-        children
+        children,
+        color
     }
 ) => {
+
     return (
         <MuiDialog
             open={open}
@@ -25,11 +28,11 @@ export const Dialog: FC<Props> = (
             fullWidth
         >
             {
-                title && <StyledDialogTitle color="primary">{title}</StyledDialogTitle>
+                title && <StyledDialogTitle color={color ?? "primary"}>{title}</StyledDialogTitle>
             }
             <DialogContent>
                 {
-                    contentText && <DialogContentText>{contentText}</DialogContentText>
+                    contentText && <StyledDialogContentText>{contentText}</StyledDialogContentText>
                 }
                 {children}
             </DialogContent>
@@ -59,8 +62,12 @@ export function useDialog(): DialogBasicProps {
     };
 }
 
-const StyledDialogTitle = styled(DialogTitle)(({theme}) => ({
-    borderBottom: `2px solid ${theme.palette.primary.main}`,
+const StyledDialogTitle = styled(DialogTitle)(({theme, color}) => ({
+    borderBottom: `2px solid ${color==="error" ? theme.palette.error.main : theme.palette.primary.main}`,
     display: "flex",
     alignItems: "center"
+}));
+
+const StyledDialogContentText = styled(DialogContentText)(({theme}) => ({
+    marginTop: theme.spacing(1)
 }));
