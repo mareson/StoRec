@@ -1,5 +1,6 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import {Asserts} from "yup";
+import {ALLOWED_MIME_TYPES} from './params';
 
 
 export function validate(
@@ -18,4 +19,8 @@ export function validate(
         }
         await handler(req, res);
     };
+}
+
+export function isValidPhotoFormat(mimetype: string | null): boolean {
+    return ALLOWED_MIME_TYPES.includes(mimetype ?? "");
 }

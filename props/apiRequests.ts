@@ -6,8 +6,8 @@ setLocale(yupLocalization);
 const receiptRequest = {
     title: string().defined().max(255),
     note: string().nullable().optional(),
-    endOfWarranty: date().nullable().optional(),
-    purchaseDate: date().nullable().optional()
+    purchaseDate: date().nullable().optional(),
+    endOfWarranty: date().nullable().optional()
 };
 export const receiptRequestSchema = object(receiptRequest);
 export interface ReceiptRequest extends Asserts<typeof receiptRequestSchema> {}

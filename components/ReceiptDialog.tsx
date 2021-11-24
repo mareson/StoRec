@@ -1,6 +1,6 @@
 import React, {FC, useContext, useEffect, useState} from "react";
 import {Dialog, DialogBasicProps, useDialog} from "./Dialog";
-import {AddCircle, Delete, Edit} from "@mui/icons-material";
+import {AddCircle, Archive, Delete, Edit} from "@mui/icons-material";
 import {Icon, styled, SvgIcon, SvgIconProps} from "@mui/material";
 import ReceiptForm from "./forms/ReceiptForm";
 import {ReceiptResponse} from "../props/apiResponses";
@@ -9,6 +9,8 @@ import RemoveDialog from "./RemoveDialog";
 import useRequest from "../props/requests";
 import { ReceiptRemoveRequestParams, removeReceiptRequest } from "../services/receiptRequest";
 import { ReceiptsListContext } from "./ReceiptsList";
+import Button from "./Button";
+import { isAfterEndOfWarranty } from "../props/helpers";
 
 type Props = {
     dialogBasicProps: DialogBasicProps;
@@ -56,6 +58,14 @@ const ReceiptDialog: FC<Props> = (
                             ?   <>
                                     <span><SvgIcon component={Edit} /> Upravení účtenky</span>
                                     <span>
+                                        {
+                                            isAfterEndOfWarranty(currReceipt) &&
+                                                <IconButton
+                                                    color="primary"
+                                                >
+                                                    <Archive />
+                                                </IconButton>
+                                        }
                                         <IconButton 
                                             color="error"
                                             onClick={removeDialog.handleOpen}
@@ -77,6 +87,7 @@ const ReceiptDialog: FC<Props> = (
             <ReceiptForm
                 afterSave={setCurrReceipt}
                 receipt={currReceipt}
+                closeDialog={dialogBasicProps.handleClose}
             />
         </Dialog>
     );

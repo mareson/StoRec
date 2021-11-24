@@ -8,6 +8,7 @@ import {createPhoto, Photo} from "../../../model/photos";
 import {PhotoResponse} from "../../../props/apiResponses";
 import vision from "@google-cloud/vision";
 import { MAX_PHOTO_SIZE } from "../../../props/params";
+import { isValidPhotoFormat } from "../../../props/validate";
 
 export const config = {
     api: {
@@ -46,6 +47,11 @@ async function handlePOST(
     const file: formidable.File | undefined = data.files.file;
     if (!file) {
         handleError(res, Errors.FILE_HAS_NOT_BEEN_SENT);
+        return;
+    }
+
+    if (isValidPhotoFormat(file.mimetype)) {
+        handleError(res, Errors.INVALID_PHOTO_FORMAT);
         return;
     }
 

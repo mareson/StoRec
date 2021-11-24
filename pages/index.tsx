@@ -9,9 +9,10 @@ import ReceiptDialog from "../components/ReceiptDialog";
 import {useDialog} from "../components/Dialog";
 import SearchForm from "../components/forms/SearchForm";
 import ReceiptsList, {useReceiptsList, ReceiptsListContext} from "../components/ReceiptsList";
-import {ReceiptResponse} from "../props/apiResponses";
+import {ListResponse, ReceiptResponse} from "../props/apiResponses";
 import {getReceiptsRequest} from "../services/receiptRequest";
 import {AxiosResponse} from "axios";
+import { LIST_DEFAULT_SIZE } from '../props/params';
 
 const Home: NextPage<{receipts: ReceiptResponse[]}> = ({receipts}) => {
     const receiptsList = useReceiptsList(receipts);
@@ -42,10 +43,10 @@ const StyledFab = styled(Fab)(({theme}) => ({
 }));
 
 export async function getServerSideProps() {
-    const receipts: AxiosResponse<ReceiptResponse[]> = await getReceiptsRequest();
+    const receipts: AxiosResponse<ListResponse<ReceiptResponse>> = await getReceiptsRequest({});
     return {
         props: {
-            receipts: receipts.data
+            receipts: receipts.data.data
         }
     }
 }

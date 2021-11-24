@@ -4,7 +4,8 @@ export enum BasicMessages {
     SOMETHING_WENT_WRONG = "Něco se nepovedlo",
     SAVED = "Uloženo",
     PHOTO_FAILED_TO_SAVE = "Fotku :name se nepodařilo uložit",
-    PHOTO_INFO_FAILED_TO_SAVE = "Informace u fotky :caption se nepodařilo uložit"
+    PHOTO_INFO_FAILED_TO_SAVE = "Informace u fotky :caption se nepodařilo uložit",
+    PHOTO_INVALID_FORMAT = "Nepodporovaný formát, podporujeme pouze fotky *.png a *jpg."
 }
 
 

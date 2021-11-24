@@ -1,8 +1,8 @@
-import {FC, useContext} from "react";
+import React, {FC, useContext} from "react";
 import {alpha, Avatar, Box, Grid, ListItem, ListItemAvatar, ListItemText, Skeleton, styled} from "@mui/material";
-import {AlarmOff, Receipt, ReceiptLong} from "@mui/icons-material";
+import {AlarmOff, Receipt, ReceiptLong, Warning} from "@mui/icons-material";
 import {ReceiptResponse} from "../props/apiResponses";
-import {printDate} from "../props/helpers";
+import {isAfterEndOfWarranty, printDate} from "../props/helpers";
 import {useDialog} from "./Dialog";
 import ReceiptDialog from "./ReceiptDialog";
 import clsx from "clsx";
@@ -16,12 +16,14 @@ const ReceiptListItem: FC<Props> = ({receipt}) => {
     const editDialog = useDialog();
     const receiptList = useContext(ReceiptsListContext);
 
+    const afterEndOfWarranty: boolean = isAfterEndOfWarranty(receipt);
+
     return (
         <>
             <ReceiptDialog dialogBasicProps={editDialog} receipt={receipt} />
             <StyledListItem
                 onClick={!!receipt ? editDialog.handleOpen : undefined}
-                className={clsx(!receipt && "skeleton")}
+                className={clsx(!receipt && "skeleton", afterEndOfWarranty && "afterEndOfWarranty")}
             >
                 {
                     !receiptList.loading
@@ -29,7 +31,11 @@ const ReceiptListItem: FC<Props> = ({receipt}) => {
                             <>
                                 <ListItemAvatar>
                                     <Avatar>
-                                        <Receipt />
+                                        {
+                                            afterEndOfWarranty 
+                                                ? <Warning />
+                                                : <Receipt />
+                                        }
                                     </Avatar>
                                 </ListItemAvatar>
                                 <StyledListItemText
@@ -38,7 +44,7 @@ const ReceiptListItem: FC<Props> = ({receipt}) => {
                                         <>
                                             <span>{printDate(receipt.purchaseDate)}</span>
                                             <span>
-                                                <EndOFWarranty>
+                                                <EndOFWarranty className={clsx(afterEndOfWarranty && "afterEndOfWarranty")}>
                                                     <AlarmOff /> {printDate(receipt.endOfWarranty)}
                                                 </EndOFWarranty>
                                              </span>
@@ -77,6 +83,9 @@ const StyledListItem = styled(ListItem)(({theme}) => ({
         "&:hover": {
             backgroundColor: alpha(theme.palette.primary.main, 0.1)
         }
+    },
+    "&.afterEndOfWarranty": {
+        backgroundColor: alpha(theme.palette.error.main, 0.1)
     }
 }));
 
@@ -98,5 +107,8 @@ const EndOFWarranty = styled("span")(({theme}) => ({
     "& svg": {
         fontSize: "1em",
         marginRight: theme.spacing(0.5)
+    },
+    "&.afterEndOfWarranty": {
+        color: theme.palette.error.main
     }
 }));

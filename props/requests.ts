@@ -37,6 +37,7 @@ export default function useRequest<T, P>(
                     resolve(result.data);
                 })
                 .catch((e: AxiosError<ErrorResponse>)=>{
+                    console.error(e);
 
                     let message: BasicMessages = BasicMessages.SOMETHING_WENT_WRONG;
                     if (errors && e.response) {

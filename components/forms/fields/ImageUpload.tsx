@@ -4,7 +4,7 @@ import {styled, Typography} from "@mui/material";
 import {Photo} from "@mui/icons-material";
 import {useField} from "formik";
 import ImagesPreview from "../ImagesPreview";
-import { MAX_PHOTO_SIZE } from "../../../props/params";
+import { ALLOWED_MIME_TYPES, MAX_PHOTO_SIZE } from "../../../props/params";
 
 type Props = {
     name?: string;
@@ -23,7 +23,7 @@ const ImageUpload: FC<Props> = ({name, change}) => {
         <>
             <label>
                 <Input
-                    accept="image/*"
+                    accept={ALLOWED_MIME_TYPES.reduce((prev, curr)=>`${prev},${curr}`)}
                     type="file"
                     name={name}
                     multiple
@@ -39,7 +39,7 @@ const ImageUpload: FC<Props> = ({name, change}) => {
                     </Button>
                 </Wrapper>
             </label>
-            <Typography fontStyle="italic" color="secondary.dark" textAlign="center">Maximální velikost fotky: {MAX_PHOTO_SIZE/(1024^2)} MB</Typography>
+            <Typography fontStyle="italic" color="secondary.dark" textAlign="center">Maximální velikost fotky: {MAX_PHOTO_SIZE/(Math.pow(1024, 2))} MB</Typography>
             <ImagesPreview files={field.value} removeFile={removeFile} />
         </>
     );

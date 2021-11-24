@@ -2,7 +2,7 @@ import React, {FC, useContext} from "react";
 import {Formik, Form, FormikProps} from 'formik';
 import {ReceiptRequest, receiptRequestSchema} from "../../props/apiRequests";
 import TextField from "./fields/TextField";
-import {Grid} from "@mui/material";
+import {Grid, Stack, styled} from "@mui/material";
 import {FORM_SPACING} from "../../props/theme";
 import {PhotoResponse, ReceiptResponse} from "../../props/apiResponses";
 import useRequest from "../../props/requests";
@@ -22,10 +22,12 @@ import ReceiptFormPhoto from "./ReceiptFormPhoto";
 import ImageUpload from "./fields/ImageUpload";
 import { LoadingButton } from "@mui/lab";
 import { MAX_PHOTO_SIZE } from "../../props/params";
+import Button from "../Button";
 
 type Props = {
     afterSave?: (receipt: ReceiptResponse)=>void;
     receipt?: ReceiptResponse;
+    closeDialog?: ()=>void;
 };
 
 type FormValues = {
@@ -37,7 +39,7 @@ type FormValues = {
     photo: PhotoResponse[];
 };
 
-const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
+const ReceiptForm: FC<Props> = ({afterSave, receipt, closeDialog}) => {
     const receiptList = useContext(ReceiptsListContext);
     const saveReceipt = useRequest<ReceiptResponse, ReceiptRequestParams>(saveReceiptRequest, undefined, true);
     const createPhoto = useRequest<PhotoResponse, CreatePhotoRequestParams>(createPhotoRequest);
@@ -158,6 +160,7 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
                                     label="Konec záruky"
                                     name="endOfWarranty"
                                     change={setFieldValue}
+                                    minDate={values.purchaseDate}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -178,18 +181,25 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
                                 )
                             }
                             </Grid>
-                            <Grid item xs={12}>
+                            <Actions item xs={12}>
                                 <LoadingButton // External file jams typescript validator
                                     color="primary"
                                     variant="contained"
                                     type="submit"
                                     loading={saveReceipt.loading}
+                                    sx={(theme)=>({marginRight: theme.spacing(1)})}
                                 >
                                     {
                                         !!receipt ? "Uložit" : "Vytvořit"
                                     }
                                 </LoadingButton>
-                            </Grid>
+                                <Button 
+                                    variant="outlined"
+                                    onClick={closeDialog}
+                                >
+                                    Zavřít
+                                </Button>
+                            </Actions>
                         </Grid>
                     </Form>
             }
@@ -197,3 +207,9 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt}) => {
     );
 };
 export default ReceiptForm;
+
+const Actions = styled(Grid)(({theme})=>({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+}));

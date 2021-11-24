@@ -1,14 +1,22 @@
-import {createContext, FC, useContext, useState} from "react";
+import React, {createContext, FC, useContext, useEffect, useRef, useState} from "react";
 import {List, styled} from "@mui/material";
 import ReceiptListItem from "./ReceiptListItem";
-import {ReceiptResponse} from "../props/apiResponses";
+import {ListResponse, ReceiptResponse} from "../props/apiResponses";
 import useRequest from "../props/requests";
-import {getReceiptsRequest} from "../services/receiptRequest";
+import {getReceiptsRequest, GetReceiptsRequestParams} from "../services/receiptRequest";
+import Button from "./Button";
+import { MoreHoriz } from "@mui/icons-material";
+import { LIST_DEFAULT_SIZE } from "../props/params";
+import { LoadingButton } from "@mui/lab";
 
 type Props = {
     receipts: ReceiptResponse[];
     updateRequests: ()=>void;
     loading: boolean;
+    search: (params: GetReceiptsRequestParams)=>void;
+    showMore: boolean;
+    handleShowMore: ()=>void;
+    showMoreLoading: boolean;
 };
 
 
@@ -16,43 +24,106 @@ const ReceiptsList: FC = () => {
     const receiptList = useContext(ReceiptsListContext);
 
     return (
-        <StyledList>
+        <>
+            <StyledList>
+                {
+                    receiptList.receipts.map((receipt)=>
+                        <ReceiptListItem
+                            key={receipt.id}
+                            receipt={receipt}
+                        />
+                    )
+                }
+            </StyledList>
             {
-                receiptList.receipts.map((receipt)=>
-                    <ReceiptListItem
-                        key={receipt.id}
-                        receipt={receipt}
-                    />
-                )
+                receiptList.showMore &&
+                    <ShowMoreWrapper>
+                        <LoadingButton 
+                            variant="contained"
+                            onClick={receiptList.handleShowMore}
+                            loading={receiptList.loading || receiptList.showMoreLoading}
+                        >
+                            Zobrazit další
+                        </LoadingButton>
+                    </ShowMoreWrapper>
             }
-        </StyledList>
+        </>
     );
 };
 export default ReceiptsList;
 
 export function useReceiptsList(receiptsInit: ReceiptResponse[]): Props {
-    const request = useRequest<ReceiptResponse[], undefined>(getReceiptsRequest);
+    const request = useRequest<ListResponse<ReceiptResponse>, GetReceiptsRequestParams>(getReceiptsRequest, undefined, true);
     const [receipts, setReceipts] = useState<ReceiptResponse[]>(receiptsInit);
+    const [params, setParams] = useState<GetReceiptsRequestParams>({});
+    const [showMore, setShowMore] = useState<boolean>(receiptsInit.length === LIST_DEFAULT_SIZE);
+    const loadMoreRequest = useRef<boolean>(false);
+    const [showMoreLoading, setShowMoreLoading] = useState<boolean>(false);
 
     const updateRequests = async () => {
-        const result = await request.run(undefined);
+        if (!loadMoreRequest.current) {
+            request.startLoading();
+        } else {
+            loadMoreRequest.current = false;
+            setShowMoreLoading(true);
+        }
+
+        const result = await request.run(params);
         if (result) {
-            setReceipts(result);
+            setReceipts(result.data);
+            setShowMore(result.pagination.size>=(params.size ?? LIST_DEFAULT_SIZE));
+            request.stopLoading();
+            setShowMoreLoading(false);
         }
     };
 
+    const search = (params: GetReceiptsRequestParams) => {
+        setParams({size: LIST_DEFAULT_SIZE, fulltext: params.fulltext});
+    };
+
+    const handleShowMore = () => {
+        loadMoreRequest.current = true;
+        setParams({...params, size: (params.size ?? LIST_DEFAULT_SIZE)+LIST_DEFAULT_SIZE});
+    };
+
+    const initRender = useRef<boolean>(true);
+    useEffect(()=>{
+        if (initRender.current) {
+            initRender.current = false;
+            return;
+        }
+
+        updateRequests();
+    }, [params]);
+
     return {
-        receipts, updateRequests,
-        loading: request.loading
+        receipts, 
+        updateRequests,
+        loading: request.loading,
+        search,
+        showMore,
+        handleShowMore,
+        showMoreLoading
     };
 }
 
 export const ReceiptsListContext = createContext<Props>({
     receipts: [],
     updateRequests: ()=>{},
-    loading: false
+    loading: false,
+    search: ()=>{},
+    showMore: false,
+    handleShowMore: ()=>{},
+    showMoreLoading: false
 });
 
 const StyledList = styled(List)(({theme})=>({
     width: "100%"
+}));
+
+const ShowMoreWrapper = styled("div")(({theme}) => ({
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
 }));

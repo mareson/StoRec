@@ -13,7 +13,7 @@ export type ReceiptResponse = {
     endOfWarranty: null | Date;
     purchaseDate: null | Date;
     createdAt: Date;
-    photo: any[];
+    photo: PhotoResponse[];
 }
 
 export type PhotoResponse = {
@@ -26,3 +26,12 @@ export type PhotoResponse = {
     width: number;
     height: number;
 };
+
+export type Pagination = {
+    size: number;
+}
+
+export type ListResponse<T> = {
+    data: T[],
+    pagination: Pagination;
+}

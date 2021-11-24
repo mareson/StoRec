@@ -10,6 +10,7 @@ type Props = {
 };
 const ImagePreview: FC<Props> = ({image, remove}) => {
 
+    console.log(image.size, MAX_PHOTO_SIZE);
     const isTooLarge: boolean = image.size>MAX_PHOTO_SIZE;
 
     return (

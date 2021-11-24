@@ -3,15 +3,28 @@ import prisma from "./prisma";
 import {ReceiptRequest} from "../props/apiRequests";
 import {Errors} from "../props/errors";
 import {removePhotoByObject} from "./photos";
+import { object } from "yup/lib/locale";
 
 
 export type Receipt = (PrismaReceipt & {photo: PrismaPhoto[]});
 
+export async function getAllReceipts(size: number, fulltext?: string): Promise<Receipt[]> {
+    const match: {contains: string, mode: "insensitive" } = { contains: fulltext ?? "", mode: "insensitive" };
 
-export async function getAllReceipts(): Promise<Receipt[]> {
-    return await prisma.receipt.findMany({
-        include: {photo: true},
-        orderBy: [{createdAt: "desc"}]
+    return await prisma.receipt.findMany({ 
+        take: size,
+        where: (fulltext && fulltext!=="") ? {
+            OR: 
+                [
+                    { photo: { some: { text: match } } },
+                    { title: match },
+                    { note: match }
+                ],
+        } : {},
+        include: {
+            photo: true
+        },
+        orderBy: [{endOfWarranty: "asc"}]
     });
 }
 

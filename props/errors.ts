@@ -1,5 +1,6 @@
 import {NextApiResponse} from "next";
 import {ErrorResponse} from "./apiResponses";
+import { BasicMessages } from "./messages";
 
 type ErrorType = ErrorResponse & {status: number};
 
@@ -14,7 +15,9 @@ enum ErrorsEnum {
     UNSUPPORTED_METHOD="UNSUPPORTED_METHOD",
     FILE_HAS_NOT_BEEN_SENT="FILE_HAS_NOT_BEEN_SENT",
     FILE_IS_TOO_LARGE="FILE_IS_TOO_LARGE",
-    SOMETHING_WRONG_CLOUDINARY="SOMETHING_WRONG_CLOUDINARY"
+    SOMETHING_WRONG_CLOUDINARY="SOMETHING_WRONG_CLOUDINARY",
+    INVALID_PHOTO_FORMAT="INVALID_PHOTO_FORMAT",
+    SIZE_MUST_BE_NUMBER="SIZE_MUST_BE_NUMBER"
 }
 
 export const Errors: {
@@ -44,6 +47,16 @@ export const Errors: {
         name: ErrorName.CloudinaryError,
         message: "Something is wrong with cloudinary",
         status: 500
+    },
+    [ErrorsEnum.INVALID_PHOTO_FORMAT]: {
+        name: ErrorName.ValidationError,
+        message: BasicMessages.PHOTO_INVALID_FORMAT,
+        status: 400
+    },
+    [ErrorsEnum.SIZE_MUST_BE_NUMBER]: {
+        name: ErrorName.ValidationError,
+        message: "Size param must be number",
+        status: 400
     }
 }
 

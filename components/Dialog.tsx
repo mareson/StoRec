@@ -25,6 +25,7 @@ export const Dialog: FC<Props> = (
         <MuiDialog
             open={open}
             onClose={handleClose}
+            scroll="body"
             fullWidth
         >
             {

@@ -14,6 +14,13 @@ const TextField: FC<TextFieldProps> = (props) => {
             {...field}
             {...props}
 
+            onChange={(e)=>{
+                field.onChange(e);
+                if (props.onChange) {
+                    props.onChange(e);
+                }
+            }}
+
             error={meta.touched && !!meta.error}
             helperText={meta.touched && meta.error}
         />

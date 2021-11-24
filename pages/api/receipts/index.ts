@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {createReceipt, getAllReceipts, Receipt} from "../../../model/receipts";
 import {validate} from "../../../props/validate";
-import {ReceiptResponse} from "../../../props/apiResponses";
+import {ListResponse, ReceiptResponse} from "../../../props/apiResponses";
 import {receiptRequestSchema} from "../../../props/apiRequests";
 import {Errors, handleError} from "../../../props/errors";
 
@@ -24,10 +24,22 @@ async function handler(
  */
 async function handleGET(
     req: NextApiRequest,
-    res: NextApiResponse<ReceiptResponse[]>
+    res: NextApiResponse<ListResponse<ReceiptResponse>>
 ) {
-    const receipts: Receipt[] = await getAllReceipts();
-    res.status(200).json(receipts);
+    const fulltext = req.query.fulltext as string | undefined;
+    const tmpSize = req.query.size as string | undefined;
+    if (isNaN(Number(tmpSize))) {
+        handleError(res, Errors.SIZE_MUST_BE_NUMBER);
+        return;
+    }
+    const size: number = Number(tmpSize);
+
+    const receipts: Receipt[] = await getAllReceipts(size, fulltext);
+
+    res.status(200).json({
+        data: receipts,
+        pagination: {size: receipts.length}
+    });
 }
 
 
