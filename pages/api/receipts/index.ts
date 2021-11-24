@@ -28,13 +28,14 @@ async function handleGET(
 ) {
     const fulltext = req.query.fulltext as string | undefined;
     const tmpSize = req.query.size as string | undefined;
+    const archive = req.query.archive as string | undefined;
     if (isNaN(Number(tmpSize))) {
         handleError(res, Errors.SIZE_MUST_BE_NUMBER);
         return;
     }
     const size: number = Number(tmpSize);
 
-    const receipts: Receipt[] = await getAllReceipts(size, fulltext);
+    const receipts: Receipt[] = await getAllReceipts(size, fulltext, !!archive);
 
     res.status(200).json({
         data: receipts,

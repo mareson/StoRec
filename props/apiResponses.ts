@@ -14,6 +14,7 @@ export type ReceiptResponse = {
     purchaseDate: null | Date;
     createdAt: Date;
     photo: PhotoResponse[];
+    archive: boolean;
 }
 
 export type PhotoResponse = {

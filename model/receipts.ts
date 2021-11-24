@@ -8,7 +8,7 @@ import { object } from "yup/lib/locale";
 
 export type Receipt = (PrismaReceipt & {photo: PrismaPhoto[]});
 
-export async function getAllReceipts(size: number, fulltext?: string): Promise<Receipt[]> {
+export async function getAllReceipts(size: number, fulltext?: string, archive?: boolean): Promise<Receipt[]> {
     const match: {contains: string, mode: "insensitive" } = { contains: fulltext ?? "", mode: "insensitive" };
 
     return await prisma.receipt.findMany({ 
@@ -20,7 +20,10 @@ export async function getAllReceipts(size: number, fulltext?: string): Promise<R
                     { title: match },
                     { note: match }
                 ],
-        } : {},
+            AND: [
+                { archive: archive }
+            ]
+        } : { archive: archive },
         include: {
             photo: true
         },
@@ -67,7 +70,8 @@ export async function updateReceipt(id: number, receiptRequest: ReceiptRequest):
             title: receiptRequest.title,
             note: receiptRequest.note,
             endOfWarranty: receiptRequest.endOfWarranty ?? undefined,
-            purchaseDate: receiptRequest.purchaseDate ?? undefined
+            purchaseDate: receiptRequest.purchaseDate ?? undefined,
+            archive: !!receiptRequest.archive
         },
         include: {photo: true}
     })

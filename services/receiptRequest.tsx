@@ -18,11 +18,13 @@ export async function saveReceiptRequest({receiptRequest, id}: ReceiptRequestPar
 export interface GetReceiptsRequestParams {
     fulltext?: string;
     size?: number;
+    archive?: boolean;
 }
-export async function getReceiptsRequest({fulltext, size}: GetReceiptsRequestParams): Promise<AxiosResponse<ListResponse<ReceiptResponse>>> {
+export async function getReceiptsRequest({fulltext, size, archive}: GetReceiptsRequestParams): Promise<AxiosResponse<ListResponse<ReceiptResponse>>> {
     const params: URLSearchParams = new URLSearchParams();
 
     if (fulltext) params.set("fulltext", fulltext);
+    if (archive) params.set("archive", "true");
     params.set("size", (size ? size : LIST_DEFAULT_SIZE).toString());
 
     return await axios.get<ListResponse<ReceiptResponse>>(`/receipts${params.toString() !== "" ? "?"+params.toString() : ""}`);

@@ -27,5 +27,6 @@ model receipt {
   endOfWarranty DateTime @default(now()) @db.Timestamp(6)
   title         String    @db.VarChar(255)
   note          String?
+  archive Boolean @default(false)
   photo         photo[]
 }

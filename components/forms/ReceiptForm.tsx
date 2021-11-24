@@ -63,7 +63,7 @@ const ReceiptForm: FC<Props> = ({afterSave, receipt, closeDialog}) => {
             onSubmit={async (values, formikHelpers)=>{
                 saveReceipt.startLoading();
                 let receiptResponse: ReceiptResponse | null = await saveReceipt.run({
-                    receiptRequest: ({...values, files: undefined}) as ReceiptRequest,
+                    receiptRequest: ({...values, files: undefined, archive: !!receipt?.archive}) as ReceiptRequest,
                     id: receipt?.id ?? undefined
                 });
                 if (receiptResponse) {

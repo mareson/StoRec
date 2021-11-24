@@ -7,10 +7,12 @@ import {ReceiptResponse} from "../props/apiResponses";
 import IconButton from "./IconButton";
 import RemoveDialog from "./RemoveDialog";
 import useRequest from "../props/requests";
-import { ReceiptRemoveRequestParams, removeReceiptRequest } from "../services/receiptRequest";
+import { ReceiptRemoveRequestParams, ReceiptRequestParams, removeReceiptRequest, saveReceiptRequest } from "../services/receiptRequest";
 import { ReceiptsListContext } from "./ReceiptsList";
 import Button from "./Button";
 import { isAfterEndOfWarranty } from "../props/helpers";
+import { useSnackbar } from "notistack";
+import { BasicMessages } from "../props/messages";
 
 type Props = {
     dialogBasicProps: DialogBasicProps;
@@ -25,8 +27,10 @@ const ReceiptDialog: FC<Props> = (
 ) => {
     const [currReceipt, setCurrReceipt] = useState<ReceiptResponse | undefined>(receipt);
     const removeRequest = useRequest<"", ReceiptRemoveRequestParams>(removeReceiptRequest);
+    const updateRequest = useRequest<ReceiptResponse, ReceiptRequestParams>(saveReceiptRequest);
     const removeDialog = useDialog();
     const receiptsList = useContext(ReceiptsListContext);
+    const {enqueueSnackbar} = useSnackbar();
 
     useEffect(()=>{
         if (!dialogBasicProps.open && !receipt) {
@@ -47,6 +51,17 @@ const ReceiptDialog: FC<Props> = (
         }
     };
 
+    const archive = async () => {
+        if (!currReceipt) return;
+
+        const result: ReceiptResponse | null = await updateRequest.run({id: currReceipt.id, receiptRequest: {...currReceipt, archive: true}});
+        if (result && result.archive) {
+            enqueueSnackbar(BasicMessages.ARCHIVED, {variant: "success"});
+            dialogBasicProps.handleClose();
+            receiptsList.updateRequests();
+        }
+    };
+
     return (
         <Dialog
             open={dialogBasicProps.open}
@@ -62,6 +77,7 @@ const ReceiptDialog: FC<Props> = (
                                             isAfterEndOfWarranty(currReceipt) &&
                                                 <IconButton
                                                     color="primary"
+                                                    onClick={archive}
                                                 >
                                                     <Archive />
                                                 </IconButton>

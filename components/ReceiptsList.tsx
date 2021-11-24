@@ -78,7 +78,7 @@ export function useReceiptsList(receiptsInit: ReceiptResponse[]): Props {
     };
 
     const search = (params: GetReceiptsRequestParams) => {
-        setParams({size: LIST_DEFAULT_SIZE, fulltext: params.fulltext});
+        setParams({...params, size: LIST_DEFAULT_SIZE});
     };
 
     const handleShowMore = () => {
