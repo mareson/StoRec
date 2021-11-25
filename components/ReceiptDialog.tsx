@@ -1,6 +1,6 @@
 import React, {FC, useContext, useEffect, useState} from "react";
 import {Dialog, DialogBasicProps, useDialog} from "./Dialog";
-import {AddCircle, Archive, Delete, Edit} from "@mui/icons-material";
+import {AddCircle, Archive, Delete, Edit, Unarchive} from "@mui/icons-material";
 import {Icon, styled, SvgIcon, SvgIconProps} from "@mui/material";
 import ReceiptForm from "./forms/ReceiptForm";
 import {ReceiptResponse} from "../props/apiResponses";
@@ -54,9 +54,9 @@ const ReceiptDialog: FC<Props> = (
     const archive = async () => {
         if (!currReceipt) return;
 
-        const result: ReceiptResponse | null = await updateRequest.run({id: currReceipt.id, receiptRequest: {...currReceipt, archive: true}});
-        if (result && result.archive) {
-            enqueueSnackbar(BasicMessages.ARCHIVED, {variant: "success"});
+        const result: ReceiptResponse | null = await updateRequest.run({id: currReceipt.id, receiptRequest: {...currReceipt, archive: !currReceipt.archive}});
+        if (result) {
+            enqueueSnackbar(result.archive ? BasicMessages.ARCHIVED : BasicMessages.UNARCHIVED, {variant: "success"});
             dialogBasicProps.handleClose();
             receiptsList.updateRequests();
         }
@@ -74,12 +74,14 @@ const ReceiptDialog: FC<Props> = (
                                     <span><SvgIcon component={Edit} /> Upravení účtenky</span>
                                     <span>
                                         {
-                                            (!currReceipt.archive && isAfterEndOfWarranty(currReceipt)) &&
+                                            (isAfterEndOfWarranty(currReceipt)) &&
                                                 <IconButton
                                                     color="primary"
                                                     onClick={archive}
                                                 >
-                                                    <Archive />
+                                                    {
+                                                        currReceipt.archive ? <Unarchive /> : <Archive />
+                                                    }
                                                 </IconButton>
                                         }
                                         <IconButton 

@@ -7,6 +7,7 @@ export enum BasicMessages {
     PHOTO_INFO_FAILED_TO_SAVE = "Informace u fotky :caption se nepodařilo uložit",
     PHOTO_INVALID_FORMAT = "Nepodporovaný formát, podporujeme pouze fotky *.png a *jpg.",
     ARCHIVED = "Archivováno",
+    UNARCHIVED = "Vyjmuto z archivu",
     CANCELLED = "Zrušeno"
 }
 
