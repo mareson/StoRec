@@ -74,7 +74,7 @@ const ReceiptDialog: FC<Props> = (
                                     <span><SvgIcon component={Edit} /> Upravení účtenky</span>
                                     <span>
                                         {
-                                            isAfterEndOfWarranty(currReceipt) &&
+                                            (!currReceipt.archive && isAfterEndOfWarranty(currReceipt)) &&
                                                 <IconButton
                                                     color="primary"
                                                     onClick={archive}

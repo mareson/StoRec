@@ -38,6 +38,8 @@ export default function useRequest<T, P>(
                 })
                 .catch((e: AxiosError<ErrorResponse>)=>{
                     console.error(e);
+                    
+                    if (axios.isCancel(e)) return;
 
                     let message: BasicMessages = BasicMessages.SOMETHING_WENT_WRONG;
                     if (errors && e.response) {

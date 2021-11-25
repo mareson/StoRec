@@ -1,6 +1,6 @@
 import {ReceiptRequest} from "../props/apiRequests";
 import {ListResponse, ReceiptResponse} from "../props/apiResponses";
-import axios, {Axios, AxiosResponse} from "axios";
+import axios, {Axios, AxiosResponse, CancelToken} from "axios";
 import { LIST_DEFAULT_SIZE } from "../props/params";
 
 export interface ReceiptRequestParams {
@@ -19,15 +19,18 @@ export interface GetReceiptsRequestParams {
     fulltext?: string;
     size?: number;
     archive?: boolean;
+    cancelToken?: CancelToken
 }
-export async function getReceiptsRequest({fulltext, size, archive}: GetReceiptsRequestParams): Promise<AxiosResponse<ListResponse<ReceiptResponse>>> {
+export async function getReceiptsRequest({fulltext, size, archive, cancelToken}: GetReceiptsRequestParams): Promise<AxiosResponse<ListResponse<ReceiptResponse>>> {
     const params: URLSearchParams = new URLSearchParams();
 
     if (fulltext) params.set("fulltext", fulltext);
     if (archive) params.set("archive", "true");
     params.set("size", (size ? size : LIST_DEFAULT_SIZE).toString());
 
-    return await axios.get<ListResponse<ReceiptResponse>>(`/receipts${params.toString() !== "" ? "?"+params.toString() : ""}`);
+    return await axios.get<ListResponse<ReceiptResponse>>(`/receipts${params.toString() !== "" ? "?"+params.toString() : ""}`, {
+        cancelToken: cancelToken
+    });
 }
 
 export interface ReceiptRemoveRequestParams {

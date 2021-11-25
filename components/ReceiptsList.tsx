@@ -8,6 +8,8 @@ import Button from "./Button";
 import { MoreHoriz } from "@mui/icons-material";
 import { LIST_DEFAULT_SIZE } from "../props/params";
 import { LoadingButton } from "@mui/lab";
+import axios, { CancelTokenSource, CancelTokenStatic } from "axios";
+import { BasicMessages } from "../props/messages";
 
 type Props = {
     receipts: ReceiptResponse[];
@@ -59,6 +61,7 @@ export function useReceiptsList(receiptsInit: ReceiptResponse[]): Props {
     const [showMore, setShowMore] = useState<boolean>(receiptsInit.length === LIST_DEFAULT_SIZE);
     const loadMoreRequest = useRef<boolean>(false);
     const [showMoreLoading, setShowMoreLoading] = useState<boolean>(false);
+    const cancelTokenSource = useRef<CancelTokenSource>();
 
     const updateRequests = async () => {
         if (!loadMoreRequest.current) {
@@ -68,7 +71,11 @@ export function useReceiptsList(receiptsInit: ReceiptResponse[]): Props {
             setShowMoreLoading(true);
         }
 
-        const result = await request.run(params);
+        if (cancelTokenSource.current) cancelTokenSource.current.cancel(BasicMessages.CANCELLED);
+        cancelTokenSource.current = axios.CancelToken.source();
+
+        const result = await request.run({...params, cancelToken: cancelTokenSource.current.token});
+
         if (result) {
             setReceipts(result.data);
             setShowMore(result.pagination.size>=(params.size ?? LIST_DEFAULT_SIZE));
