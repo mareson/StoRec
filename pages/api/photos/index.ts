@@ -50,7 +50,7 @@ async function handlePOST(
         return;
     }
 
-    if (isValidPhotoFormat(file.mimetype)) {
+    if (!isValidPhotoFormat(file.mimetype)) {
         handleError(res, Errors.INVALID_PHOTO_FORMAT);
         return;
     }

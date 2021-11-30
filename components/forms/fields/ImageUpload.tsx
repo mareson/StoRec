@@ -38,6 +38,8 @@ const ImageUpload: FC<Props> = ({name, change}) => {
         if (newFiles.length !== 0 && change) {
             change(field.name, [...field.value, ...newFiles]);
         }
+
+        setDragOver(false);
     };
 
     const handleDragOver = (e: React.DragEvent<any>) => {
